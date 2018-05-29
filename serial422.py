@@ -240,7 +240,7 @@ class RS422Func(QThread):
 
     def LockDown(self, str):
         for lock in SharedMemory.LockList:
-            if lock.addr ==str and lock.arm != 'ff':
+            if lock.addr ==str and lock.arm == '55':
                 Address = str
                 Tempstr = Address + '051003FF00'
                 strcrc = hex(crc16_xmode(unhexlify(Tempstr)))[2:].zfill(4)

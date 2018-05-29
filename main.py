@@ -8,12 +8,12 @@ from serial422 import RS422Func
 from ConnectCamera import TcpClient
 from Data import MyLock
 from WebService import WebServer
-import time
+import time as t
 import logging
 import logging.config
 #from gpioctr import GpioCtr
 from os import path
-
+from datetime import *
 log_file_path = path.join(path.dirname(path.abspath(__file__)), 'logging.config')
 logging.config.fileConfig(log_file_path)
 MyLog = logging.getLogger('ws_debug_log')         #log data
@@ -73,7 +73,7 @@ class Main(QWidget,Ui_Form):
     def btnRescanClicked(self):
         rs422.ThreadTag = False
         rs422.scanTag = False
-        time.sleep(3)
+        t.sleep(3)
 
         #不知道直接Clear行不行
 #        self.tableWidget.clear()
@@ -82,7 +82,7 @@ class Main(QWidget,Ui_Form):
         row_count = self.tableWidget.rowCount()
         for row_index in range(row_count):
             self.tableWidget.removeRow(0)
-        time.sleep(2)
+        t.sleep(2)
         rs422.ThreadTag = True
         rs422.ScanPort()
         pass
@@ -131,7 +131,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = '04'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnLockDownClicked(self):
@@ -145,7 +145,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = '05'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnLockDownAndRestClicked(self):
@@ -159,7 +159,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = '06'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnLedOnClicked(self):
@@ -189,7 +189,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = '08'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnDisableAlarmClicked(self):
@@ -203,7 +203,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = '09'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnChaoShengTestClicked(self):
@@ -217,7 +217,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = 'F1'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
     def btnQuitTestClicked(self):
@@ -231,7 +231,7 @@ class Main(QWidget,Ui_Form):
                 addr = self.tableWidget.item(row_index, 0).text()
                 cmd = 'F4'
                 self.signal_LockCMD.emit(cmd + addr)
-                time.sleep(1)
+                t.sleep(1)
         pass
 
 
@@ -243,6 +243,13 @@ class Main(QWidget,Ui_Form):
         gpio.LockPowerOff()
         pass
 
+    def ShowID(self,str1):
+        strTime = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+
+        self.textBrowser_Cam.append(strTime+":"+str1)
+        if self.textBrowser_Cam.toPlainText().count()>200:
+            self.textBrowser_Cam.clear()
+            pass
 
     def ShowNewLock(self,MyLock):
         row_count = self.tableWidget.rowCount();
@@ -371,7 +378,7 @@ class Main(QWidget,Ui_Form):
 
     def formcloseClicked(self):
         webservice.close()
-        time.sleep(1)
+        t.sleep(1)
         QCoreApplication.quit()
         pass
 
@@ -398,5 +405,6 @@ if __name__ == '__main__':
     rs422.signal_newLock.connect(ex.ShowNewLock)
 
     client.signal_detect.connect(rs422.LockCMDExcute)
+    client.signal_showID.connect(ex.ShowID)
 
     sys.exit(app.exec_())

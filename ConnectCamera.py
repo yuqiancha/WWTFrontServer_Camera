@@ -1,5 +1,6 @@
 import http.client
 import time
+from datetime import *
 import threading
 from Data import MyLock
 from Data import SharedMemory
@@ -18,6 +19,7 @@ MajorLog = logging.getLogger('ws_error_log')      #log error
 
 class TcpClient(QThread):
     signal_detect = pyqtSignal(str)
+    signal_showID = pyqtSignal(str)
     def __init__(self):
         super(TcpClient,self).__init__()
         print("TcpClient In")
@@ -115,6 +117,7 @@ def RecvFromCamera(Mysocket,self):
                         DColor = color_de.split(':')[1]
                         if DColor=='绿':
                             self.signal_detect.emit('0501')
+                            self.signal_showID.emit(license_de.split(':')[1])
 
                         break
 

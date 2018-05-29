@@ -19,9 +19,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>240</x>
      <y>70</y>
-     <width>961</width>
+     <width>731</width>
      <height>491</height>
     </rect>
    </property>
@@ -234,6 +234,16 @@
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser_Cam">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>221</width>
+     <height>491</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>

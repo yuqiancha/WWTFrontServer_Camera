@@ -14,7 +14,7 @@ class Ui_Form(object):
         Form.resize(982, 576)
         self.tableWidget = QtWidgets.QTableWidget(Form)
         self.tableWidget.setEnabled(True)
-        self.tableWidget.setGeometry(QtCore.QRect(10, 70, 961, 491))
+        self.tableWidget.setGeometry(QtCore.QRect(240, 70, 731, 491))
         self.tableWidget.setAutoFillBackground(False)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget.setAlternatingRowColors(False)
@@ -112,6 +112,9 @@ class Ui_Form(object):
         self.pushButton_exit.setObjectName("pushButton_exit")
         self.verticalLayout_8.addWidget(self.pushButton_exit)
         self.horizontalLayout.addLayout(self.verticalLayout_8)
+        self.textBrowser_Cam = QtWidgets.QTextBrowser(Form)
+        self.textBrowser_Cam.setGeometry(QtCore.QRect(10, 70, 221, 491))
+        self.textBrowser_Cam.setObjectName("textBrowser_Cam")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
