@@ -30,6 +30,7 @@ class Main(QWidget,Ui_Form):
         self.init()
 
     def init(self):
+        self.ClearTextTag = 0
         self.handlAllTag = False
         self.tableWidget.setColumnCount(13)
         self.tableWidget.setRowCount(0)
@@ -245,9 +246,12 @@ class Main(QWidget,Ui_Form):
 
     def ShowID(self,str1):
         strTime = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-
+        print("ShowID:"+str1)
         self.textBrowser_Cam.append(strTime+":"+str1)
-        if self.textBrowser_Cam.toPlainText().count()>200:
+        MyLog2.info(str1)
+        self.ClearTextTag +=1
+        if self.ClearTextTag > 20:
+            self.ClearTextTag = 0
             self.textBrowser_Cam.clear()
             pass
 

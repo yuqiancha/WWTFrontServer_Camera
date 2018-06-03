@@ -1,6 +1,5 @@
 import http.client
 import time
-from datetime import *
 import threading
 from Data import MyLock
 from Data import SharedMemory
@@ -103,7 +102,7 @@ def RecvFromCamera(Mysocket,self):
 
                         license,color=struct.unpack("!16s8s",RecvStr[pos:pos+24])
                         nColor, nType, nConfigdence, rec_time = struct.unpack("<iiii",RecvStr[pos+24:pos+40])
-                        license_de = '车牌号：'
+                        license_de = '车牌号:'
                         license_de+=license.decode('gbk')
                         license_de = license_de.split('\x00')[0]
                         color_de = '颜色:'
@@ -118,6 +117,7 @@ def RecvFromCamera(Mysocket,self):
                         if DColor=='绿':
                             self.signal_detect.emit('0501')
                             self.signal_showID.emit(license_de.split(':')[1])
+                            print("触发显示:"+license_de.split(':')[1])
 
                         break
 
