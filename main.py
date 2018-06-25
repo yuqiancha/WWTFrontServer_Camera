@@ -8,6 +8,7 @@ from serial422 import RS422Func
 from ConnectCamera import TcpClient
 from Data import MyLock
 from WebService import WebServer
+from NewCamServer import TcpServer
 import time as t
 import logging
 import logging.config
@@ -391,8 +392,8 @@ if __name__ == '__main__':
     ex=Main()
     ex.show()
 
-    client = TcpClient()
-
+ #   client = TcpClient()
+    myTcpServer = TcpServer()
  #   gpio = GpioCtr()
 
     rs422 = RS422Func()
@@ -408,7 +409,10 @@ if __name__ == '__main__':
     rs422.signal_Lock.connect(ex.ShowLock)
     rs422.signal_newLock.connect(ex.ShowNewLock)
 
-    client.signal_detect.connect(rs422.LockCMDExcute)
-    client.signal_showID.connect(ex.ShowID)
+  #  client.signal_detect.connect(rs422.LockCMDExcute)
+  #  client.signal_showID.connect(ex.ShowID)
+
+    myTcpServer.signal_detect.connect(rs422.LockCMDExcute)
+    myTcpServer.signal_showID.connect(ex.ShowID)
 
     sys.exit(app.exec_())
