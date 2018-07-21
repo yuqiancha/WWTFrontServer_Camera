@@ -12,16 +12,27 @@ import socket
 from binascii import hexlify,unhexlify
 import json
 import struct
+import configparser
 
 MyLog2 = logging.getLogger('ws_debug_log2')       #log data
 MajorLog = logging.getLogger('ws_error_log')      #log error
+MyLogCam = logging.getLogger('ws_cam_log')          #cam log
 
 class TcpClient(QThread):
-    signal_detect = pyqtSignal(str)
+    signal_detect = pyqtSignal(str,str)
+    signal_blue_detect = pyqtSignal(str,str)
     signal_showID = pyqtSignal(str)
+    signal_blue_showID = pyqtSignal(str)
     def __init__(self):
         super(TcpClient,self).__init__()
         print("TcpClient In")
+
+        try:
+            self.cf = configparser.ConfigParser()
+            self.cf.read(path.expandvars('$HOME') + '/Downloads/WWTFrontServer/Configuration.ini',encoding="utf-8-sig")
+
+        except Exception as ex:
+            MajorLog(ex)
 
         self.ThreadTag = True
 
@@ -70,6 +81,11 @@ def SendToCamera(Mysocket,self):
 def RecvFromCamera(Mysocket,self):
     print('RecvFromCamera In')
 
+
+    timenow = 0
+    timelast = 0
+    timeSpent = 0
+
     while self.ThreadTag:
         try:
             RecvStr = Mysocket.recv(16384*16)
@@ -89,7 +105,7 @@ def RecvFromCamera(Mysocket,self):
                     #print('2:',Shead,SType,Sreserved,Slenth)
 
                     if Shead==b'EP' and SType==11:
-                    #    print("Recved Heart!")
+                     #   print("Recved Heart!")
                         Index +=8
                     if Shead==b'EP' and SType==1:
                         print("Recved 识别信息find")
@@ -114,10 +130,32 @@ def RecvFromCamera(Mysocket,self):
                         Index +=8+824
 
                         DColor = color_de.split(':')[1]
-                        if DColor=='绿':
-                            self.signal_detect.emit('0501')
-                            self.signal_showID.emit(license_de.split(':')[1])
-                            print("触发显示:"+license_de.split(':')[1])
+
+                    #    if DColor=='绿':
+                    #        self.signal_detect.emit('0501')
+                    #        self.signal_showID.emit(license_de.split(':')[1])
+                    #        print("触发显示:"+license_de.split(':')[1])
+
+                        Dlisence = license_de.split(':')[1]
+                        ip = '192.168.0.56'
+                        if DColor == '绿':
+                            MyLogCam.info(str(self.cf.get("StartLoad", ip)) + ':' + Dlisence + "绿色")
+
+                            timenow = int(time.time())
+
+                            timeSpent = timenow - timelast
+
+                            timelast = timenow
+
+                            if timeSpent > 5:
+                                self.signal_detect.emit('05' + str(self.cf.get("StartLoad",ip)), Dlisence)
+                                self.signal_showID.emit(str(self.cf.get("StartLoad", ip)) + ':' + Dlisence)
+                        elif DColor == '蓝':
+                            MyLogCam.info(str(self.cf.get("StartLoad", ip)) + ':' + Dlisence + "蓝色")
+                            self.signal_blue_detect.emit(str(self.cf.get("StartLoad", ip)), Dlisence)
+                            self.signal_blue_showID.emit(str(self.cf.get("StartLoad", ip)) + ':' + Dlisence)
+                        else:
+                            pass
 
                         break
 

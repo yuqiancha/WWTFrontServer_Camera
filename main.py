@@ -5,21 +5,24 @@ import binascii
 import serial.tools.list_ports
 from Ui_Form import Ui_Form
 from serial422 import RS422Func
-from ConnectCamera import TcpClient
 from Data import MyLock
 from WebService import WebServer
 import time as t
 import logging
 import logging.config
-#from gpioctr import GpioCtr
+from gpioctr import GpioCtr
 from os import path
+from NewCamServer import TcpServer
 from datetime import *
+from ConnectCamera import TcpClient
+
 log_file_path = path.join(path.dirname(path.abspath(__file__)), 'logging.config')
 logging.config.fileConfig(log_file_path)
+
 MyLog = logging.getLogger('ws_debug_log')         #log data
 MyLog2 = logging.getLogger('ws_debug_log2')       #log net data
 MajorLog = logging.getLogger('ws_error_log')      #log error
-
+MyLogCam = logging.getLogger('ws_cam_log')          #cam log
 
 class Main(QWidget,Ui_Form):
     signal_LockCMD = pyqtSignal(str)
@@ -174,9 +177,6 @@ class Main(QWidget,Ui_Form):
         addr = self.comboBox.currentText()
         cmd = '17'
         self.signal_LockCMD.emit(cmd+addr)
-
-        #用于停止socket
-        client.close()
         pass
 
     def btnEnableAlarmClicked(self):
@@ -255,6 +255,17 @@ class Main(QWidget,Ui_Form):
             self.textBrowser_Cam.clear()
             pass
 
+    def ShowID2(self,str1):
+        strTime = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
+        print("ShowID:"+str1)
+        self.textBrowser_Cam.append("SendToServer--"+strTime+":"+str1)
+        MyLog2.info(str1)
+        self.ClearTextTag +=1
+        if self.ClearTextTag > 20:
+            self.ClearTextTag = 0
+            self.textBrowser_Cam.clear()
+            pass
+
     def ShowNewLock(self,MyLock):
         row_count = self.tableWidget.rowCount();
         self.tableWidget.insertRow(row_count)
@@ -300,7 +311,8 @@ class Main(QWidget,Ui_Form):
             #    item1 = QTableWidgetItem(MyLock.carCome)
              #   item2 = QTableWidgetItem(MyLock.carLeave)
               #  item3 = QTableWidgetItem(MyLock.carStayTime)
-                item4 = QTableWidgetItem(MyLock.mode)
+
+                item4 = QTableWidgetItem(MyLock.licenseID)
 
                 str_arm = '未知'
                 if MyLock.arm=='55':
@@ -391,24 +403,23 @@ if __name__ == '__main__':
     ex=Main()
     ex.show()
 
-    client = TcpClient()
+    gpio = GpioCtr()
 
- #   gpio = GpioCtr()
-
+#    myTcpServer = TcpServer()
+    myTcpServer = TcpClient()
     rs422 = RS422Func()
     rs422.ScanPort()
 
     webservice = WebServer()
     webservice.signal.connect(rs422.LockCMDExcute)
 
-    ex.webstatusClicked()
-
     ex.signal_LockCMD.connect(rs422.LockCMDExcute)
 
     rs422.signal_Lock.connect(ex.ShowLock)
     rs422.signal_newLock.connect(ex.ShowNewLock)
 
-    client.signal_detect.connect(rs422.LockCMDExcute)
-    client.signal_showID.connect(ex.ShowID)
-
+    myTcpServer.signal_detect.connect(rs422.LockCMDExcute2)
+    myTcpServer.signal_showID.connect(ex.ShowID)
+    myTcpServer.signal_blue_detect.connect(webservice.SendLiscenseToServer)
+    myTcpServer.signal_blue_showID.connect(ex.ShowID2)
     sys.exit(app.exec_())

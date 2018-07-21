@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>982</width>
-    <height>576</height>
+    <width>1020</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,10 +19,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>200</x>
      <y>70</y>
-     <width>731</width>
-     <height>491</height>
+     <width>811</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -70,7 +70,7 @@
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>961</width>
+     <width>1001</width>
      <height>68</height>
     </rect>
    </property>
@@ -240,8 +240,8 @@
     <rect>
      <x>10</x>
      <y>70</y>
-     <width>221</width>
-     <height>491</height>
+     <width>191</width>
+     <height>511</height>
     </rect>
    </property>
   </widget>

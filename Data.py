@@ -1,4 +1,3 @@
-
 #查询回复eb 90 0d 01 04 08 00 ff 55 00 64 00 00 00 38 37
 class MyLock(object):
     def __init__(self):
@@ -24,12 +23,13 @@ class MyLock(object):
         self.waitcartime2 = 0                   #车辆降锁2分钟内认为车子在反复倒车，不升锁
         self.carFinallyLeave = False                   #判断是否是车子离开的情况，如果车子离开，立刻升锁
 
-
-
         self.carCome = 0                        #车来时间
         self.carLeave = 0                       #车走时间
         self.carStayTime = 0                    #车停靠时间
         self.money = 0
+
+        self.licenseID = '00000000'
+        self.camIP = ''
 
 class SharedMemory(object):
     LockList = []

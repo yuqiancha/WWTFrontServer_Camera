@@ -1,4 +1,3 @@
-# WWTFrontServer_Camera
-for camera use
-for now use 1Byte id
-may change to 4Byte
+# WWTFrontServer
+WWTFrontServer designed with python3 and pyqt
+change id from 1Byte to 4Bytes
