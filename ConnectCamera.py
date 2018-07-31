@@ -36,7 +36,7 @@ class TcpClient(QThread):
 
         self.ThreadTag = True
 
-        server_ip = '192.168.0.98'
+        server_ip = '192.168.1.98'
         server_port = 9740
 
         MySocket = self.ConnectCamera(server_ip,server_port)
